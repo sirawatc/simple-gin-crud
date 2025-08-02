@@ -33,11 +33,21 @@ jobs:
         with:
           go-version: '1.24.5'
 
-      - name: Install gotestdox
-        run: go install github.com/bitfield/gotestdox@latest
+      - name: Set up gotestfmt
+        uses: gotesttools/gotestfmt-action@v2
 
-      - name: Run tests with gotestdox
-        run: gotestdox ./...
+      - name: Run tests
+        run: |
+          set -euo pipefail
+          go test -json -v ./... 2>&1 | tee /tmp/gotest.log | gotestfmt
+
+      - name: Upload test log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-log
+          path: /tmp/gotest.log
+          if-no-files-found: error
 
   build:
     name: Build
@@ -47,15 +57,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: '1.24.5'
 
       - name: Build application
-        run: go build -v ./...
-
-      - name: Build main binary
-        run: go build -o bin/server ./server
+        run: go build -o bin/main ./cmd/main
 
   security:
     name: Security Scan
@@ -65,7 +72,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: '1.24.5'
 
