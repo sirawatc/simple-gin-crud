@@ -35,6 +35,8 @@ jobs:
 
       - name: Set up gotestfmt
         uses: gotesttools/gotestfmt-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run tests
         run: |
