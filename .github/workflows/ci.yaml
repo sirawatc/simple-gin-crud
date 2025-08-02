@@ -62,7 +62,7 @@ jobs:
           go-version: '1.24.5'
 
       - name: Build application
-        run: go build -o bin/main ./cmd/main
+        run: go build -o bin/main cmd/main/main.go
 
   security:
     name: Security Scan
