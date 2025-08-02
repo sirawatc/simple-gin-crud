@@ -21,7 +21,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
 
-  test:
+  unit-test:
     name: Unit Test
     runs-on: ubuntu-latest
     steps:
@@ -39,15 +39,27 @@ jobs:
       - name: Run tests
         run: |
           set -euo pipefail
-          go test -json -v ./... 2>&1 | tee /tmp/gotest.log | gotestfmt
+          go test -json -v -coverprofile=coverage.txt ./... 2>&1 | tee /tmp/gotest.log | gotestfmt
 
-      - name: Upload test log
+      - name: Upload coverage results
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: test-log
-          path: /tmp/gotest.log
-          if-no-files-found: error
+          name: coverage
+          path: coverage.txt
+
+  coverage:
+    name: Coverage
+    needs: unit-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents:      read
+      actions:       read
+      pull-requests: write
+    steps:
+      - uses: fgrosse/go-coverage-report@v1.2.0
+        with:
+          coverage-artifact-name: "coverage"
+          coverage-file-name: "coverage.txt"
 
   build:
     name: Build
