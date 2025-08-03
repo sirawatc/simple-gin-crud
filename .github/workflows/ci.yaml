@@ -99,6 +99,8 @@ jobs:
       - name: Generate coverage report
         if: steps.check_artifact.outputs.exists == 'true'
         uses: fgrosse/go-coverage-report@v1.2.0
+        with:
+          github-baseline-workflow-ref: 'update-coverage.yaml'
 
   build:
     name: Build
