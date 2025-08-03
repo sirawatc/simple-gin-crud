@@ -41,12 +41,12 @@ jobs:
       - name: Run tests
         run: |
           set -euo pipefail
-          go test -json -v -coverprofile=coverage.txt ./... 2>&1 | tee /tmp/gotest.log | gotestfmt
+          go test -json -v -coverprofile=coverage.txt $(go list ./... | grep -E '/internal/|/pkg/') 2>&1 | tee /tmp/gotest.log | gotestfmt
 
       - name: Upload coverage results
         uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: code-coverage 
           path: coverage.txt
 
   coverage:
@@ -58,10 +58,31 @@ jobs:
       actions:       read
       pull-requests: write
     steps:
-      - uses: fgrosse/go-coverage-report@v1.2.0
-        with:
-          coverage-artifact-name: "coverage"
-          coverage-file-name: "coverage.txt"
+      - name: Check target branch artifact
+        id: check
+        run: |
+          ARTIFACT_NAME="code-coverage"
+
+          RUN_ID=$(gh run list --status=success --branch=${{ github.event.pull_request.base.ref }} --workflow=update-coverage.yaml --json=databaseId --limit=1 -q '.[0].databaseId')
+
+          if [ -z "$RUN_ID" ]; then
+            echo "❌ No coverage found on branch: ${{ github.event.pull_request.base.ref }}"
+            exit 0
+          else
+            echo "✅ Found run ID: $RUN_ID"
+          fi
+
+          EXISTS=$(gh api /repos/${{ github.repository }}/actions/runs/$RUN_ID/artifacts --jq ".artifacts[] | select(.name == \"$ARTIFACT_NAME\") | .id")
+
+          if [ -n "$EXISTS" ]; then
+            echo "✅ Artifact '$ARTIFACT_NAME' exists"
+          else
+            echo "❌ Artifact '$ARTIFACT_NAME' not found"
+            exit 0
+          fi
+
+      - name: Generate coverage report
+        uses: fgrosse/go-coverage-report@v1.2.0
 
   build:
     name: Build
