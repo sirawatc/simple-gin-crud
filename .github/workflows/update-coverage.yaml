@@ -1,10 +1,11 @@
 name: Update Coverage
 
 on:
-  workflow_run:
-    workflows: ["ci.yaml"]
+  pull_request:
+    branches:
+      - main
     types:
-      - completed
+      - closed
 
 jobs:
   upload:
