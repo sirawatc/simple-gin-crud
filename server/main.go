@@ -24,7 +24,7 @@ func InitServer(cfg *config.Config, db *gorm.DB, logger *logrus.Logger) *gin.Eng
 	SetupRoutes(router, db, logger)
 
 	address := fmt.Sprintf("%s:%s", cfg.Server.Host, cfg.Server.Port)
-	logger.Infof("Starting server on %s", address)
+	logger.Infof("Starting server in %s mode on %s", gin.Mode(), address)
 	if err := router.Run(address); err != nil {
 		logger.Errorf("Failed to start server: %v", err)
 	}

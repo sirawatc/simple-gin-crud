@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sirawatc/simple-gin-crud/database"
 	"github.com/sirawatc/simple-gin-crud/internal/shared/config"
 	"github.com/sirawatc/simple-gin-crud/pkg/logger"
@@ -13,6 +14,8 @@ func main() {
 	cfg := config.NewConfig()
 
 	logger := logger.NewLogger(cfg.ServiceName)
+
+	gin.SetMode(cfg.Mode)
 
 	db, err := database.NewPostgres(cfg)
 	if err != nil {

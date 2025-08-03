@@ -1,0 +1,43 @@
+name: simple-gin-crud
+
+services:
+  db:
+    image: postgres:17.5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: simple_gin_crud
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+  app:
+    build: .
+    environment:
+      GIN_MODE: release
+      SERVICE_NAME: simple-gin-crud
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8080
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: simple_gin_crud
+      DB_SSLMODE: disable
+      DB_TIMEZONE: Asia/Bangkok
+      DB_AUTO_MIGRATE: true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:

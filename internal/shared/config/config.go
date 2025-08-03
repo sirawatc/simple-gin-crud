@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	Mode        string
 	ServiceName string
 	Database    DatabaseConfig
 	Server      ServerConfig
@@ -30,10 +31,13 @@ type ServerConfig struct {
 }
 
 func NewConfig() *Config {
-	if err := godotenv.Load(); err != nil {
-		log.Printf("Warning: .env file not found, using default values")
+	if os.Getenv("GIN_MODE") != "release" {
+		if err := godotenv.Load(); err != nil {
+			log.Printf("Warning: .env file not found, using default values")
+		}
 	}
 	return &Config{
+		Mode:        getValue("GIN_MODE", "debug"),
 		ServiceName: getValue("SERVICE_NAME", "simple-gin-crud"),
 		Database: DatabaseConfig{
 			User:        getValue("DB_USER", ""),
