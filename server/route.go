@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirawatc/simple-gin-crud/internal/author"
+	"github.com/sirawatc/simple-gin-crud/internal/book"
 	"github.com/sirawatc/simple-gin-crud/pkg/middleware"
 	"github.com/sirawatc/simple-gin-crud/pkg/repository"
 	"github.com/sirupsen/logrus"
@@ -18,12 +19,15 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *logrus.Logger) {
 
 	// Initialize repositories
 	authorRepo := author.NewRepository(transactionManager, logger)
+	bookRepo := book.NewRepository(transactionManager, logger)
 
 	// Initialize services
 	authorService := author.NewService(authorRepo, logger)
+	bookService := book.NewService(bookRepo, authorService, logger)
 
 	// Initialize handlers
 	authorHandler := author.NewHandler(authorService, logger)
+	bookHandler := book.NewHandler(bookService, logger)
 
 	// Add middleware
 	router.Use(middleware.RequestIDMiddleware())
@@ -32,6 +36,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *logrus.Logger) {
 	// Add rate limit if needed ref: https://github.com/JGLTechnologies/gin-rate-limit
 	initHealthRoutes(router, db)
 	initAuthorRoutes(router, authorHandler)
+	initBookRoutes(router, bookHandler)
 }
 
 func initAuthorRoutes(router *gin.Engine, authorHandler *author.Handler) {
@@ -42,6 +47,18 @@ func initAuthorRoutes(router *gin.Engine, authorHandler *author.Handler) {
 		authors.GET("/", authorHandler.GetAllAuthors)
 		authors.PUT("/:id", authorHandler.UpdateAuthor)
 		authors.DELETE("/:id", authorHandler.DeleteAuthor)
+	}
+}
+
+func initBookRoutes(router *gin.Engine, bookHandler *book.Handler) {
+	books := router.Group("/book")
+	{
+		books.POST("/", bookHandler.CreateBook)
+		books.GET("/:id", bookHandler.GetBook)
+		books.GET("/author/:authorId", bookHandler.GetBooksByAuthorID)
+		books.GET("/", bookHandler.GetAllBooks)
+		books.PUT("/:id", bookHandler.UpdateBook)
+		books.DELETE("/:id", bookHandler.DeleteBook)
 	}
 }
 
