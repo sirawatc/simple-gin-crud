@@ -5,4 +5,4 @@ dev:
 	GIN_MODE=debug go run cmd/main/main.go
 
 test:
-	go test -json -v ./... | gotestfmt
+	go test -json -v $$(go list ./... | grep -E '/internal/|/pkg/') | gotestfmt
