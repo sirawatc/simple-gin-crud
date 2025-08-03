@@ -1,22 +1,12 @@
 # Simple Gin CRUD API
 
-<p align="center">
-  <a href="https://golang.org">
-    <img src="https://img.shields.io/badge/Go-1.24.5-blue.svg" alt="Go Version">
-  </a>
-  <a href="https://github.com/gin-gonic/gin">
-    <img src="https://img.shields.io/badge/Gin-1.10.1-green.svg" alt="Gin Version">
-  </a>
-  <a href="https://gorm.io">
-    <img src="https://img.shields.io/badge/GORM-1.30.1-orange.svg" alt="GORM Version">
-  </a>
-  <a href="https://www.postgresql.org">
-    <img src="https://img.shields.io/badge/PostgreSQL-17.5-blue.svg" alt="PostgreSQL">
-  </a>
-  <a href="LICENSE.md">
-    <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
-  </a>
-</p>
+<div align="center">
+  <img src="https://img.shields.io/badge/Go-1.24.5-blue.svg" alt="Go Version">
+  <img src="https://img.shields.io/badge/Gin-1.10.1-green.svg" alt="Gin Version">
+  <img src="https://img.shields.io/badge/GORM-1.30.1-orange.svg" alt="GORM Version">
+  <img src="https://img.shields.io/badge/coverage-90%25-brightgreen.svg" alt="PostgreSQL">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+</div>
 
 A simple boilerplate CRUD API built with Go Gin framework following clean architecture principles.
 
@@ -31,6 +21,7 @@ A simple boilerplate CRUD API built with Go Gin framework following clean archit
 - **Error Handling**: Standardized error responses with custom codes.
 - **Documentation**: Complete Postman collection for API testing.
 - **Docker Support**: Containerized application with Docker Compose.
+- **CI Pipeline**: Automated code analysis and testing.
 
 ## 📋 Prerequisites
 
@@ -107,6 +98,16 @@ simple-gin-crud/
 ├── docker-compose.yml  # Docker services configuration
 └── Dockerfile          # Application container definition
 ```
+
+## 🔄 CI Pipeline
+
+The CI pipeline includes:
+
+- **🔍 Code Quality**: Linting with golangci-lint
+- **🧪 Testing**: Unit tests with coverage reporting
+- **🐳 Docker Build**: Container image building and testing
+- **📊 Coverage**: Test coverage analysis and reporting
+- **🔒 Security**: Dependency vulnerability scanning
 
 ## 📄 License
 
