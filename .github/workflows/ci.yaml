@@ -58,6 +58,9 @@ jobs:
       actions:       read
       pull-requests: write
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Check target branch artifact
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
