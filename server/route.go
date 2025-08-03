@@ -40,7 +40,8 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB, logger *logrus.Logger) {
 }
 
 func initAuthorRoutes(router *gin.Engine, authorHandler *author.Handler) {
-	authors := router.Group("/author")
+	v1 := router.Group("/v1")
+	authors := v1.Group("/author")
 	{
 		authors.POST("/", authorHandler.CreateAuthor)
 		authors.GET("/:id", authorHandler.GetAuthor)
@@ -51,7 +52,8 @@ func initAuthorRoutes(router *gin.Engine, authorHandler *author.Handler) {
 }
 
 func initBookRoutes(router *gin.Engine, bookHandler *book.Handler) {
-	books := router.Group("/book")
+	v1 := router.Group("/v1")
+	books := v1.Group("/book")
 	{
 		books.POST("/", bookHandler.CreateBook)
 		books.GET("/:id", bookHandler.GetBook)
