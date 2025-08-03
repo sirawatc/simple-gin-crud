@@ -5,4 +5,4 @@ dev:
 	GIN_MODE=debug go run cmd/main/main.go
 
 test:
-	gotestdox ./...
+	go test -json -v $$(go list ./... | grep -E '/internal/|/pkg/') | gotestfmt
